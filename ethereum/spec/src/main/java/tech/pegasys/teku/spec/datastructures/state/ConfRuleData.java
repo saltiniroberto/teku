@@ -15,4 +15,4 @@ package tech.pegasys.teku.spec.datastructures.state;
 
 import java.util.List;
 
-public record ConfRuleData(List<Byte> current, List<Byte> previous) {}
+public record ConfRuleData(List<Byte> currentEpochParticipation, List<Byte> previousEpochParticipation) {}

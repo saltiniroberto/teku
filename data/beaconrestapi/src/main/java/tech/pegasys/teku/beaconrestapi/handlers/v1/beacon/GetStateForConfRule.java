@@ -40,8 +40,8 @@ public class GetStateForConfRule extends RestApiEndpoint {
 
   private static final SerializableTypeDefinition<ConfRuleData> EPOCH_PARTICIPATION_TYPE =
       SerializableTypeDefinition.object(ConfRuleData.class)
-          .withField("current", listOf(BYTE_TYPE), ConfRuleData::current)
-          .withField("previous", listOf(BYTE_TYPE), ConfRuleData::previous)
+          .withField("current_epoch_participation", listOf(BYTE_TYPE), ConfRuleData::currentEpochParticipation)
+          .withField("previous_epoch_participation", listOf(BYTE_TYPE), ConfRuleData::previousEpochParticipation)
           .build();
 
   private static final SerializableTypeDefinition<ObjectAndMetaData<ConfRuleData>>
