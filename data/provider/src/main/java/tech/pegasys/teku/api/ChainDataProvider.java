@@ -72,7 +72,7 @@ import tech.pegasys.teku.spec.datastructures.metadata.ObjectAndMetaData;
 import tech.pegasys.teku.spec.datastructures.metadata.StateAndMetaData;
 import tech.pegasys.teku.spec.datastructures.operations.Attestation;
 import tech.pegasys.teku.spec.datastructures.state.CommitteeAssignment;
-import tech.pegasys.teku.spec.datastructures.state.EpochParticipation;
+import tech.pegasys.teku.spec.datastructures.state.ConfRuleData;
 import tech.pegasys.teku.spec.datastructures.state.SyncCommittee;
 import tech.pegasys.teku.spec.logic.common.statetransition.epoch.status.ValidatorStatuses;
 import tech.pegasys.teku.spec.logic.common.statetransition.exceptions.EpochProcessingException;
@@ -409,12 +409,12 @@ public class ChainDataProvider {
     return maybeValidator.map(data -> stateData.map(__ -> data));
   }
 
-  public SafeFuture<Optional<ObjectAndMetaData<EpochParticipation>>> getStateParticipation(
+  public SafeFuture<Optional<ObjectAndMetaData<ConfRuleData>>> getConfRuleData(
       final String stateIdParam) {
     return fromState(
         stateIdParam,
         state ->
-            new EpochParticipation(
+            new ConfRuleData(
                 state.toVersionAltair().orElseThrow().getCurrentEpochParticipation().stream()
                     .map(SszByte::get)
                     .toList(),

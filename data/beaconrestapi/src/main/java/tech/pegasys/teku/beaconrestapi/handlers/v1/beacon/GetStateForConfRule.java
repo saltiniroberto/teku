@@ -33,21 +33,21 @@ import tech.pegasys.teku.infrastructure.restapi.endpoints.EndpointMetadata;
 import tech.pegasys.teku.infrastructure.restapi.endpoints.RestApiEndpoint;
 import tech.pegasys.teku.infrastructure.restapi.endpoints.RestApiRequest;
 import tech.pegasys.teku.spec.datastructures.metadata.ObjectAndMetaData;
-import tech.pegasys.teku.spec.datastructures.state.EpochParticipation;
+import tech.pegasys.teku.spec.datastructures.state.ConfRuleData;
 
-public class GetStateEpochParticipation extends RestApiEndpoint {
-  public static final String ROUTE = "/eth/v1/beacon/states/{state_id}/epoch_participation";
+public class GetStateForConfRule extends RestApiEndpoint {
+  public static final String ROUTE = "/eth/v1/beacon/states/{state_id}/conf_rule";
 
-  private static final SerializableTypeDefinition<EpochParticipation> EPOCH_PARTICIPATION_TYPE =
-      SerializableTypeDefinition.object(EpochParticipation.class)
-          .withField("current", listOf(BYTE_TYPE), EpochParticipation::current)
-          .withField("previous", listOf(BYTE_TYPE), EpochParticipation::previous)
+  private static final SerializableTypeDefinition<ConfRuleData> EPOCH_PARTICIPATION_TYPE =
+      SerializableTypeDefinition.object(ConfRuleData.class)
+          .withField("current", listOf(BYTE_TYPE), ConfRuleData::current)
+          .withField("previous", listOf(BYTE_TYPE), ConfRuleData::previous)
           .build();
 
-  private static final SerializableTypeDefinition<ObjectAndMetaData<EpochParticipation>>
+  private static final SerializableTypeDefinition<ObjectAndMetaData<ConfRuleData>>
       RESPONSE_TYPE =
-          SerializableTypeDefinition.<ObjectAndMetaData<EpochParticipation>>object()
-              .name("GetEpochParticipationResponse")
+          SerializableTypeDefinition.<ObjectAndMetaData<ConfRuleData>>object()
+              .name("GetStateForConfRule")
               .withField(
                   EXECUTION_OPTIMISTIC, BOOLEAN_TYPE, ObjectAndMetaData::isExecutionOptimistic)
               .withField(FINALIZED, BOOLEAN_TYPE, ObjectAndMetaData::isFinalized)
@@ -56,16 +56,16 @@ public class GetStateEpochParticipation extends RestApiEndpoint {
 
   private final ChainDataProvider chainDataProvider;
 
-  public GetStateEpochParticipation(final DataProvider dataProvider) {
+  public GetStateForConfRule(final DataProvider dataProvider) {
     this(dataProvider.getChainDataProvider());
   }
 
-  GetStateEpochParticipation(final ChainDataProvider chainDataProvider) {
+  GetStateForConfRule(final ChainDataProvider chainDataProvider) {
     super(
         EndpointMetadata.get(ROUTE)
-            .operationId("getEpochParticipation")
-            .summary("Get all epoch participation for a state.")
-            .description("Retrieves the participation for the given state.")
+            .operationId("getStateForConfRule")
+            .summary("Data for Confirmation Rule")
+            .description("Get data to be used to execute the confirmation rule algorithm.")
             .pathParam(PARAMETER_STATE_ID)
             .tags(TAG_EXPERIMENTAL)
             .response(SC_OK, "Request successful", RESPONSE_TYPE)
@@ -77,8 +77,8 @@ public class GetStateEpochParticipation extends RestApiEndpoint {
   @Override
   public void handleRequest(final RestApiRequest request) throws JsonProcessingException {
 
-    final SafeFuture<Optional<ObjectAndMetaData<EpochParticipation>>> future =
-        chainDataProvider.getStateParticipation(request.getPathParameter(PARAMETER_STATE_ID));
+    final SafeFuture<Optional<ObjectAndMetaData<ConfRuleData>>> future =
+        chainDataProvider.getConfRuleData(request.getPathParameter(PARAMETER_STATE_ID));
 
     request.respondAsync(
         future.thenApply(
